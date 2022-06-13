@@ -1,50 +1,61 @@
 import json
+from classes import Candidate
 
 
-class Candidate:
-    def __init__(self, candidate_id: int, name: str, picture: str, position: str, gender: str, age: int, skills: str):
-        self.candidate_id = candidate_id
-        self.name = name
-        self.picture = picture
-        self.position = position
-        self.gender = gender
-        self.age = age
-        self.skills = skills
+def load_candidates(filename, encoding='utf-8'):
+    """ Чтение данных из файла"""
+    with open(filename, 'r', encoding=encoding) as f:
+        raw_dict = json.load(f)
+        candidates = []
+        for candidate in raw_dict:
+            candidates.append(Candidate(candidate["id"], candidate["name"], candidate["picture"],candidate["position"],
+                                         candidate["skills"].split(", ")))
+            return candidates
 
-    def __repr__(self):
-        return f"""Кандидат:\n{self.name}\n{self.picture}\n{self.position}\n{self.skills}"""
 
-    def load_json(self, filename, encoding='utf-8'):
-        """ Чтение данных из файла"""
-        with open(filename, 'r', encoding=encoding) as f:
-            return json.load(f)
 
-    def load_candidates(self) -> list[dict]:
-        """ Загружает кандидатов из файла candidates.json в список """
-        candidates = self.load_json('candidates.json')
-        return candidates
+candidates = load_candidates('candidates.json')
+print(candidates)
 
-    def candidates_id(self, id: int) -> dict:
-        """ Поиск кандидатов по id"""
-        candidates = self.load_candidates()
-        for candidate in candidates:
-            if candidate['id'] == id:
-                return candidate
 
-    def candidates_skills(self, skill: str) -> list[dict]:
-        """ Поиск по навыкам кандидата"""
-        candidates = self.load_candidates()
-        result = []
-        for candidate in candidates:
-            if skill in candidate['skills'].lower().split(', '):
-                result.append(candidate)
-        return result
 
-    def candidates_picture(self, id: int) -> str:
-        """ Поиск картинки(фото) кандидата"""
-        candidates = self.load_candidates()
-        for candidate in candidates:
-            if candidate['id'] == id:
-                picture = f'<img src="{candidate["picture"]}">'
-                return picture
+# def format_candidate(candidates: list[dict]) -> str:
+#     """ Преобразует список кандидатов"""
+#     result = '<pre>'
+#     for candidate in candidates:
+#         result += f"""
+#             {candidate["name"]}\n
+#             {candidate["position"]}\n
+#             {candidate["skills"]}\n\n
+#         """
+#     result += '</pre>'
+#     return result
+
+
+# def candidates_id(id: int) -> dict:
+#     """ Поиск кандидатов по id"""
+#     candidates = load_candidates()
+#     for candidate in candidates:
+#         if candidate['id'] == id:
+#             return candidate
+#
+#
+# def candidates_skills(skill: str) -> list[dict]:
+#     """ Поиск по навыкам кандидата"""
+#     candidates = load_candidates()
+#     result = []
+#     for candidate in candidates:
+#         if skill in candidate['skills'].lower().split(', '):
+#             result.append(candidate)
+#     return result
+#
+#
+# def candidates_picture(id: int) -> str:
+#     """ Поиск картинки(фото) кандидата"""
+#     candidates = load_candidates()
+#     for candidate in candidates:
+#         if candidate['id'] == id:
+#             picture = f'<img src="{candidate["picture"]}">'
+#             return picture
+
 
